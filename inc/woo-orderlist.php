@@ -213,7 +213,7 @@ class Woo_Order_Search_List {
 		EOF;
 		echo $body_html2;
 
-		$wid = '[{ wpx : 0 },{ wpx : 50 },{ wpx : 144 },{ wpx : 121 },{ wpx : 121 },{ wpx : 144 },{ wpx : 144 },{ wpx : 72 }]';
+		$wid = '[{ wpx : 2 },{ wpx : 50 },{ wpx : 144 },{ wpx : 121 },{ wpx : 121 },{ wpx : 144 },{ wpx : 144 },{ wpx : 72 }]';
 		$fname = '注文検索結果一覧.xlsx';
 		echo footer_wol_xlsx_html( $wid, $fname );
 
