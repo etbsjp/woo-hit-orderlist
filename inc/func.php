@@ -21,6 +21,39 @@ if ( ! function_exists( 'etbs_woocommerce_tag_exists' ) ){
 }
 
 /*-------------------------------------------*/
+/* 抽選購入のカテゴリーの場合、カートに追加ボタンを変更する
+/*-------------------------------------------*/
+if ( ! function_exists( 'woocommerce_custom_single_add_to_cart_text' ) ){
+	function woocommerce_custom_single_add_to_cart_text() {
+		global $post, $product;
+		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
+		$str = htmlspecialchars( $product->get_tags() );
+		$chkeck = '抽選購入';
+		if ( strpos( $str, $chkeck ) === false ) {
+			return __( 'カートに入れる', 'woocommerce' ); 
+		} else {
+			return __( '抽選に申し込む', 'woocommerce' );
+		}
+	}
+	add_filter( 'woocommerce_product_single_add_to_cart_text', 'woocommerce_custom_single_add_to_cart_text' );
+}
+
+if ( ! function_exists( 'woocommerce_custom_product_add_to_cart_text' ) ){
+	function woocommerce_custom_product_add_to_cart_text() {
+		global $post, $product;
+		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
+		$str = htmlspecialchars( $product->get_tags() );
+		$chkeck = '抽選購入';
+		if ( strpos( $str, $chkeck ) === false ) {
+			return __( 'カートに入れる', 'woocommerce' ); 
+		} else {
+			return __( '抽選に申し込む', 'woocommerce' );
+		}
+	}
+	add_filter( 'woocommerce_product_add_to_cart_text', 'woocommerce_custom_product_add_to_cart_text' );
+}
+
+/*-------------------------------------------*/
 /* ヘッダーCSS出力
 /*-------------------------------------------*/
 if ( ! function_exists( 'header_wol_css_html' ) ){
