@@ -8,7 +8,7 @@ class Woo_Comment_Search_List {
 	public static function add_menu() {
 		$page_title = '注文メモ検索';
 		$menu_title = '注文メモ検索';
-		$capability = 'edit_pages';
+		$capability = 'edit_shop_orders';
 		$menu_slug  = 'woo-comment-list';
 		$function   = array( __CLASS__, 'list_page' );
 		add_submenu_page( 'woocommerce', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -16,19 +16,19 @@ class Woo_Comment_Search_List {
 
 	public static function list_page() {
 		if(isset($_GET['d1'])) { 
-			$day1 = $_GET['d1']; 
+			$day1 = sanitize_text_field( wp_unslash( $_GET['d1'] ) ); 
 		} else {
 			$day1 = date("Y-m-d", strtotime("-7 day"));
 		}
 
 		if(isset($_GET['d2'])) { 
-			$day2 = $_GET['d2']; 
+			$day2 = sanitize_text_field( wp_unslash( $_GET['d2'] ) ); 
 		} else {
 			$day2 = date("Y-m-d", strtotime("-1 day"));
 		}
 
 		if(isset($_GET['keyword'])) {
-			$keyword = $_GET['keyword']; 
+			$keyword = sanitize_text_field( wp_unslash( $_GET['keyword'] ) ); 
 			if( $keyword == 'none') {
 				$keyword = '';
 			}
@@ -86,20 +86,23 @@ class Woo_Comment_Search_List {
 
 		global $wpdb;
 		if ( $keyword == '' ) {
-			$query = "SELECT comment_ID, comment_post_ID, comment_date, comment_content FROM $wpdb->comments 
+			$query = "SELECT comment_ID, comment_post_ID, comment_date, comment_content FROM {$wpdb->comments}
 				WHERE comment_type = %s AND comment_date BETWEEN %s AND %s";
+			$lists = $wpdb->get_results(
+				$wpdb->prepare( $query, 'order_note', $day1, $day2 ), 'ARRAY_A' );
 		} else {
-			$query = "SELECT comment_ID, comment_post_ID, comment_date, comment_content FROM $wpdb->comments 
-				WHERE comment_type = %s AND comment_date BETWEEN %s AND %s AND comment_content LIKE '%{$keyword}%'";
+			$query = "SELECT comment_ID, comment_post_ID, comment_date, comment_content FROM {$wpdb->comments}
+				WHERE comment_type = %s AND comment_date BETWEEN %s AND %s AND comment_content LIKE %s";
+			$like  = '%' . $wpdb->esc_like( $keyword ) . '%';
+			$lists = $wpdb->get_results(
+				$wpdb->prepare( $query, 'order_note', $day1, $day2, $like ), 'ARRAY_A' );
 		}
-		$lists = $wpdb->get_results(
-			$wpdb->prepare( $query, 'order_note', $day1, $day2 ), 'ARRAY_A' );
 		
 		foreach ( $lists as $list ){
-			$body_table .= '<tr><td>' . $list['comment_ID'] . '</td>';
-			$body_table .= '<td><a href="' . admin_url() . 'post.php?post=' . $list['comment_post_ID'] . '&action=edit">' . $list['comment_post_ID'] . '</a></td>';
-			$body_table .= '<td>' . $list['comment_date'] . '</td>';
-			$body_table .= '<td>' . $list['comment_content'] . '</td>';
+			$body_table .= '<tr><td>' . esc_html( $list['comment_ID'] ) . '</td>';
+			$body_table .= '<td><a href="' . esc_url( admin_url( 'post.php?post=' . $list['comment_post_ID'] . '&action=edit' ) ) . '">' . esc_html( $list['comment_post_ID'] ) . '</a></td>';
+			$body_table .= '<td>' . esc_html( $list['comment_date'] ) . '</td>';
+			$body_table .= '<td>' . esc_html( $list['comment_content'] ) . '</td>';
 			$body_table .= '</tr>';
 		}
 

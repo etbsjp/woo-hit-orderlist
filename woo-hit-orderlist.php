@@ -4,7 +4,7 @@
  * Description:       特定の商品を注文したユーザーにランダムでメッセージを送信可能なプラグインです。抽選・当選メールなどを注文メモで送信することを想定しています。登録商品が多い場合は”抽選購入”のタグを追加すると、絞り込みし易くなります。
  * Version:           1.0.0
  * Requires at least: 6.7
- * Requires PHP:      8.3
+ * Requires PHP:      7.4
  * Author: DAI
  * Author URI: https://etbs.jp
  * Plugin URI: https://etbs.jp/product/woo-hit-orderlist/
@@ -12,6 +12,8 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       woo-hit-orderlist
  */
+
+define( 'WHOL_PLUGIN_FILE', __FILE__ );
 
 require_once( dirname( __FILE__ ) . '/inc/func.php' );
 require_once( dirname( __FILE__ ) . '/inc/woo-orderlist.php' );
