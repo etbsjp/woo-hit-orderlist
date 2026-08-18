@@ -189,3 +189,77 @@ if ( ! function_exists( 'etbs_woo_sendmailhit' ) ){
 	add_action( 'wp_ajax_etbs_woo_sendmailhit', 'etbs_woo_sendmailhit' );
 	//add_action( 'wp_ajax_nopriv_etbs_woo_sendmailhit', 'etbs_woo_sendmailhit' );
 }
+/*-------------------------------------------*/
+/* サポート導線（ダッシュボードウィジェット）
+/*-------------------------------------------*/
+if ( ! function_exists( 'whol_add_dashboard_widget' ) ) {
+	function whol_add_dashboard_widget() {
+		if ( ! current_user_can( 'edit_shop_orders' ) ) { return; }
+		wp_add_dashboard_widget(
+			'whol_dashboard_widget',
+			'Woo Hit Orderlist',
+			'whol_render_dashboard_widget'
+		);
+	}
+	add_action( 'wp_dashboard_setup', 'whol_add_dashboard_widget' );
+}
+
+if ( ! function_exists( 'whol_render_dashboard_widget' ) ) {
+	function whol_render_dashboard_widget() {
+		$list_url = admin_url( 'admin.php?page=woo-order-list' );
+		$memo_url = admin_url( 'admin.php?page=woo-comment-list' );
+		?>
+		<p>特定の商品を注文した方の中から抽選で当選者を選び、注文メモ経由でメッセージを送信できます。抽選販売の当選通知を想定しています。</p>
+
+		<strong>使い方</strong>
+		<ul style="margin:6px 0 12px 1.2em;list-style:disc;">
+			<li><strong>WooCommerce &gt; 注文検索</strong>で、商品と期間を指定して対象の注文を絞り込みます。</li>
+			<li>「当選人数」を入力して<strong>ランダムチェック</strong>を押すと、その人数だけ無作為に選ばれます。</li>
+			<li>送信メッセージを入力して<strong>メール送信</strong>を押すと、チェックした注文に注文メモが追加されます。</li>
+			<li>送信済みの内容は<strong>WooCommerce &gt; 注文メモ検索</strong>で後から確認できます。</li>
+		</ul>
+
+		<strong>注意事項</strong>
+		<ul style="margin:6px 0 12px 1.2em;list-style:disc;">
+			<li>送信されるのは<strong>「顧客へのメモ」</strong>です。<strong>そのまま注文者にメールが届きます。</strong>文面を確認してから送信してください。</li>
+			<li>送信は取り消せません。ランダムチェックの結果は送信前に必ず確認してください。</li>
+			<li>商品に<strong>「抽選購入」タグ</strong>を付けると検索で絞り込みやすくなり、商品ページのボタンが「抽選に申し込む」に変わります。</li>
+			<li>同じ商品が1つの注文の中で複数明細に分かれていても、<strong>1注文1行</strong>として扱われます（当選確率が偏らないようにするため）。</li>
+		</ul>
+
+		<strong>サポート</strong>
+		<p style="margin:6px 0 12px;">有償サポートやカスタマイズは<a href="https://etbs.jp/product-category/wordpress-tools/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener">こちらのページ</a>からお問い合わせください。開発の継続は<a href="https://etbs.jp/product/donate/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener">ご支援</a>で応援いただけます。</p>
+
+		<a href="<?php echo esc_url( $list_url ); ?>" class="button button-primary">注文検索を開く</a>
+		<a href="<?php echo esc_url( $memo_url ); ?>" class="button">注文メモ検索を開く</a>
+		<?php
+	}
+}
+
+/*-------------------------------------------*/
+/* サポート導線（プラグイン一覧の行）
+/*-------------------------------------------*/
+if ( ! function_exists( 'whol_plugin_row_meta' ) ) {
+	function whol_plugin_row_meta( $links, $file ) {
+		if ( plugin_basename( WHOL_PLUGIN_FILE ) !== $file ) { return $links; }
+		$links[] = '<a href="https://etbs.jp/product/donate/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener noreferrer">'
+			. esc_html__( '開発を支援', 'woo-hit-orderlist' ) . '</a>';
+		$links[] = '<a href="https://etbs.jp/product-category/wordpress-tools/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener noreferrer">'
+			. esc_html__( '開発のご依頼', 'woo-hit-orderlist' ) . '</a>';
+		return $links;
+	}
+	add_filter( 'plugin_row_meta', 'whol_plugin_row_meta', 10, 2 );
+}
+
+/*-------------------------------------------*/
+/* サポート導線（専用画面のフッター）
+/*-------------------------------------------*/
+if ( ! function_exists( 'whol_admin_footer_text' ) ) {
+	function whol_admin_footer_text( $text ) {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$targets = array( 'woocommerce_page_woo-order-list', 'woocommerce_page_woo-comment-list' );
+		if ( ! $screen || ! in_array( $screen->id, $targets, true ) ) { return $text; }
+		return 'Woo Hit Orderlistが役に立ったら <a href="https://etbs.jp/product/donate/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener noreferrer">開発を支援</a>、カスタマイズは <a href="https://etbs.jp/product-category/wordpress-tools/?utm_source=woo-hit-orderlist&utm_medium=plugin" target="_blank" rel="noopener noreferrer">開発のご依頼</a> からどうぞ。';
+	}
+	add_filter( 'admin_footer_text', 'whol_admin_footer_text' );
+}
