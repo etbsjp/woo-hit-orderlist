@@ -1,0 +1,58 @@
+# woo-hit-orderlist
+
+etbs が配布する WordPress プラグイン。共通ルールの正本は `~/.claude/etbs-plugin-rules.md`。
+
+## レビュー工程に大（シニアエンジニア）を追加する
+
+このリポジトリでは、安藤（`vk-code-reviewer`）のレビューのあと、**PR を作成する前に**
+大（`etbs-senior-wp`）の監査を必ず通すこと。大は etbs の申し送りと過去に踏んだ罠に照らして
+「リリースできる形になっているか」を見る担当で、安藤の一般的なコード品質レビューとは層が違う。
+
+- `Agent` ツールで `subagent_type: etbs-senior-wp`、`name: etbs-senior-wp`、
+  **`run_in_background: false`** で起動する
+- **`isolation: "worktree"` は使えるなら付ける**（付けないと起動応答は「成功」と返るのに
+  一度も作業せず待機状態に入ることがある）。ただし ★★ **作業ディレクトリが git リポジトリでないと使えない。**
+  その場合は **isolation なしで起動してよい**（2026-08-19 実績あり）。
+  **見分け方は起動応答の形**——`output_file` 付きの正常形なら動いている
+- prompt には対象リポジトリ・ブランチ・差分（または PR 番号）を渡す
+- 大には **出力の末尾に `監査結果: PASS` または `監査結果: FAIL` を必ず書くよう指示する**
+  （★ 大の定義ファイルには出力形式の指定が無いため、指示しないと合否を機械判定できない）
+- `監査結果: PASS` を受け取るまで PR を作成しない。`FAIL` なら和田へ差し戻して再監査する
+
+★ 大は vk-agents のメンバー表に登録されていないため、指示が無いと**永久に呼ばれない**。
+
+## 検証環境
+
+Local の `order-memo`（`ordermemo.etbs.lc`）。**シンボリックリンク設置でよい**
+（このプラグインは `dirname( __FILE__, N )` を使っていない）。
+★ このサイトは sigusa.jp のクローンで**実顧客の注文37件**を含む。氏名・メール・住所を出力しないこと。
+
+CLI 検証では Local の php.ini を `-c` で渡すこと。渡さないと「データベース接続確立エラー」になり、
+**サイトが停止しているように見える**（実際は動いている）。`<runId>` は
+`ls -d ~/Library/Application\ Support/Local/run/*/mysql/mysqld.sock` で特定する。
+
+## 版数
+
+版数は**ヘッダの `Version:` 1箇所のみ**。JS の enqueue は SheetJS 自身の版（`0.20.3`）を
+使っておりキャッシュバスターを兼ねていないため、他に追随させる箇所は無い。
+`readme.txt` は無く、PUC は本体ヘッダを読む（`Requires` 系の readme 上書きは起きない）。
+
+## 配布物
+
+`dist` ブランチへのマージ＝配信。PUC が配る zip には**追跡しているファイルが全部入る**ため、
+`.gitignore`（追跡させない）と `.gitattributes` の `export-ignore`（zip から落とす）は役割が別。
+両方を維持すること。
+
+## 宣言（Requires）の方針
+
+★★ `Requires at least` / `Requires PHP` は**実在する下限があるときだけ書く。無ければ書かない。**
+**他のプラグインと横並びで揃えない。**
+
+- 過剰宣言は WordPress が**有効化そのものを拒否する**（`validate_plugin_requirements()`）。
+  更新も `Plugin_Upgrader::check_package()` の段階で `incompatible_wp_required_version` で止まる
+  （★ PUC は `requires` を更新トランジェントに入れないため、**更新リンクは出るのに押すと失敗する**という形になる）
+- このリポジトリは 2026-08-19 に `Requires at least: 6.7` を**削除**した。
+  理由：ブロックを登録しておらず、自前コードの最も新しい WP API が `sanitize_textarea_field()`（WP 4.7）、
+  同梱 PUC を含めても `wp_doing_cron()`（WP 4.8）で、**6.x 帯に下限が存在しない**。
+  6.7 は初版 `5e45967`（0.1.0 / 2025-05-12）からの定型文で、特定の API に紐づいたものではなかった
+- `Requires PHP: 7.4` は据え置き（PHP 7.4.30 の実バイナリで全ファイルの構文チェックが通ることを確認済み）
