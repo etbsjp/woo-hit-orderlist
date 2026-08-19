@@ -161,8 +161,9 @@ class Woo_Order_Search_List {
 			} else {
 				const userResponse = confirm('この内容でチェックの入っている注文者にメールを送信します');
 				if (userResponse) {
+					// pagechkclear() は ajax が成功したときだけ woo_sendmailhit() 内で呼ぶ。
+					// ここで無条件に呼ぶと、送信が失敗していてもチェックが消えて「送信できた」ように見えてしまうため。
 					woo_sendmailhit();
-					pagechkclear();
 				} else {
 					return false;
 				}
@@ -201,10 +202,16 @@ class Woo_Order_Search_List {
 					},
 					success: function( response ){
 						alert( response );
+						// 送信できたときだけチェックを消す（失敗時に消すと何を送ろうとしていたか分からなくなるため）
+						pagechkclear();
+					},
+					error: function( xhr ){
+						// WooCommerce無効化時などサーバー側が2xx以外を返した場合、success側には来ないためここで拾う。
+						// レスポンス本文（サーバー側で用意したエラーメッセージ）をそのまま表示し、運用者が異常に気づけるようにする。
+						alert( xhr.responseText );
 					}
 				});
 				return false;
-				alert( "予期しないエラーしました。何度も発生する場合は管理者に問い合わせて下さい。" );
 			}
 		}
 
