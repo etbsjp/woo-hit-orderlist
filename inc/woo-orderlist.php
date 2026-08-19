@@ -111,14 +111,27 @@ class Woo_Order_Search_List {
 		});
 
 		function randchk(){
-			// ページ内のすべてのチェックボックスを取得
-			const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-			// チェックボックスの数を取得
+			// 注文テーブル内のチェックボックスのみを取得（ページ全体から拾うと他要素まで対象になってしまうため）
+			const checkboxes = document.querySelectorAll('.order-list-table input[type="checkbox"]');
+			// チェックボックスの数（＝当選候補の件数）を取得
 			const totalCheckboxes = checkboxes.length;
-			// ランダムにチェックを入れる数を決定
-			const randomCount = document.getElementById("winners").value;
-			if(randomCount == 0){
-				alert("当選人数を入力してください");
+			// 当選人数の入力値を取得し、1以上の整数かどうかを検証する
+			// type="number" は "-3" や "1.5" も通してしまうため、未入力・0・負数・小数をまとめて弾く
+			const winnersInput = document.getElementById("winners").value;
+			const randomCount = Number(winnersInput);
+			if ( winnersInput === "" || ! Number.isInteger( randomCount ) || randomCount < 1 ) {
+				alert("当選人数には1以上の整数を入力してください。");
+				return false;
+			}
+			// 候補が0件のときは選びようがないため中止する
+			if ( totalCheckboxes === 0 ) {
+				alert("候補が0件です。対象の注文がないため実行できません。");
+				return false;
+			}
+			// 当選人数が候補件数を超える場合は、クランプ（候補件数まで下げて全員当選にする）せずに中止する。
+			// クランプすると「多めに当選人数を入れたつもりが、気づかず候補全員へ送信してしまう」事故につながるため。
+			if ( randomCount > totalCheckboxes ) {
+				alert("当選人数が候補件数（" + totalCheckboxes + "件）を超えています。" + totalCheckboxes + "人以下にして再度実行してください。");
 				return false;
 			}
 			// チェックボックスのインデックスをランダムに選択
@@ -133,7 +146,8 @@ class Woo_Order_Search_List {
 			});
 		}
 		function pagechkclear(){
-			const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+			// randchk() と同様、注文テーブル内のチェックボックスのみを対象にする
+			const checkboxes = document.querySelectorAll('.order-list-table input[type="checkbox"]');
 			checkboxes.forEach(checkbox => {
 				checkbox.checked = false;
 			});
@@ -332,6 +346,15 @@ class Woo_Order_Search_List {
 		return $body_table;
 	}
 
+	/**
+	 * 注文ステータスのスラッグを日本語表示名に変換する。
+	 *
+	 * ★ 未定義のステータスキー（例: サードパーティ拡張が追加する wc-awaiting_payment 等）は
+	 * isset で検査し、黙って空文字を返さずスラッグをそのまま返す（運用者が異常に気づけるようにするため）。
+	 *
+	 * @param string $key 注文ステータスのスラッグ（例: 'wc-processing'）。
+	 * @return string 対応する日本語表示名。未定義のキーの場合は $key をそのまま返す。
+	 */
 	public static function status_jpn($key) {
 		$status = array(
 			'wc-pending' => '保留中',
@@ -342,7 +365,8 @@ class Woo_Order_Search_List {
 			'wc-refunded' => '返金済み',
 			'wc-failed' => '失敗'
 		);
-		return $status[$key];
+		// 未定義のステータスキーは isset で弾き、黙って消さずスラッグをそのまま返す（運用者が異常に気づけるようにする）
+		return isset( $status[ $key ] ) ? $status[ $key ] : $key;
 	}
 
 }
