@@ -35,34 +35,50 @@ if ( ! function_exists( 'etbs_woocommerce_tag_exists' ) ){
 /*-------------------------------------------*/
 /* 抽選購入のカテゴリーの場合、カートに追加ボタンを変更する
 /*-------------------------------------------*/
-if ( ! function_exists( 'woocommerce_custom_single_add_to_cart_text' ) ){
-	function woocommerce_custom_single_add_to_cart_text() {
+if ( ! function_exists( 'whol_custom_single_add_to_cart_text' ) ){
+	/**
+	 * 商品詳細ページの「カートに入れる」ボタン文言を、抽選購入タグの有無で切り替える。
+	 *
+	 * ★ 接頭辞なしの関数名（旧 woocommerce_custom_single_add_to_cart_text）はテーマ側の
+	 * 同名関数と衝突し Fatal error（Cannot redeclare）の原因になっていたため whol_ を付けて改名した。
+	 *
+	 * @return string ボタンに表示する文言（未翻訳の固定文言を __() でラップしたもの）。
+	 */
+	function whol_custom_single_add_to_cart_text() {
 		global $post, $product;
 		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
 		$str = htmlspecialchars( $product->get_tags() );
 		$chkeck = '抽選購入';
 		if ( strpos( $str, $chkeck ) === false ) {
-			return __( 'カートに入れる', 'woocommerce' ); 
+			return __( 'カートに入れる', 'woocommerce' );
 		} else {
 			return __( '抽選に申し込む', 'woocommerce' );
 		}
 	}
-	add_filter( 'woocommerce_product_single_add_to_cart_text', 'woocommerce_custom_single_add_to_cart_text' );
+	add_filter( 'woocommerce_product_single_add_to_cart_text', 'whol_custom_single_add_to_cart_text' );
 }
 
-if ( ! function_exists( 'woocommerce_custom_product_add_to_cart_text' ) ){
-	function woocommerce_custom_product_add_to_cart_text() {
+if ( ! function_exists( 'whol_custom_product_add_to_cart_text' ) ){
+	/**
+	 * 商品一覧（アーカイブ／ショートコード等）の「カートに入れる」ボタン文言を、抽選購入タグの有無で切り替える。
+	 *
+	 * ★ 接頭辞なしの関数名（旧 woocommerce_custom_product_add_to_cart_text）はテーマ側の
+	 * 同名関数と衝突し Fatal error（Cannot redeclare）の原因になっていたため whol_ を付けて改名した。
+	 *
+	 * @return string ボタンに表示する文言（未翻訳の固定文言を __() でラップしたもの）。
+	 */
+	function whol_custom_product_add_to_cart_text() {
 		global $post, $product;
 		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
 		$str = htmlspecialchars( $product->get_tags() );
 		$chkeck = '抽選購入';
 		if ( strpos( $str, $chkeck ) === false ) {
-			return __( 'カートに入れる', 'woocommerce' ); 
+			return __( 'カートに入れる', 'woocommerce' );
 		} else {
 			return __( '抽選に申し込む', 'woocommerce' );
 		}
 	}
-	add_filter( 'woocommerce_product_add_to_cart_text', 'woocommerce_custom_product_add_to_cart_text' );
+	add_filter( 'woocommerce_product_add_to_cart_text', 'whol_custom_product_add_to_cart_text' );
 }
 
 /*-------------------------------------------*/
@@ -157,11 +173,26 @@ if ( ! function_exists( 'etbs_wol_enqueue_enhanced_select' ) ){
 /* 送信するIDを取得してメッセージを送信
 /*-------------------------------------------*/
 if ( ! function_exists( 'etbs_woo_sendmailhit' ) ){
+	/**
+	 * チェックされた注文へ注文メモ（顧客宛メッセージ）を一括送信する admin-ajax ハンドラー。
+	 *
+	 * ★ ヘッダの `Requires Plugins: woocommerce` は導入時（有効化時）の守りにすぎない。
+	 * WooCommerce が有効化後に停止された場合はこの関数が実行時に到達し、ガードが無いと
+	 * wc_get_order() が未定義関数となり Fatal error（HTTP 500）になる。それを防ぐためのガード。
+	 *
+	 * @return void 送信結果を echo し wp_die() で応答する。
+	 */
 	function etbs_woo_sendmailhit(){
 		check_ajax_referer( 'etbs_woo_sendmailhit', 'nonce' );
 
 		if ( ! current_user_can( 'edit_shop_orders' ) ) {
 			wp_die( '権限がありません。', '', array( 'response' => 403 ) );
+		}
+
+		// WooCommerce が無効化されていた場合、wc_get_order() は未定義関数で Fatal error になる。
+		// ヘッダの Requires Plugins は有効化時にしか働かないため、実行時にも改めて確認する。
+		if ( ! function_exists( 'wc_get_order' ) ) {
+			wp_die( 'WooCommerce が無効化されているため実行できません。', '', array( 'response' => 500 ) );
 		}
 
 		$order_note = isset( $_POST['mes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['mes'] ) ) : '';
