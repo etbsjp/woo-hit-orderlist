@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Woo Hit Orderlist
  * Description:       特定の商品を注文したユーザーにランダムでメッセージを送信可能なプラグインです。抽選・当選メールなどを注文メモで送信することを想定しています。登録商品が多い場合は”抽選購入”のタグを追加すると、絞り込みし易くなります。
- * Version:           1.1.1
+ * Version:           1.1.2
  * Requires Plugins:  woocommerce
  * Requires PHP:      7.4
  * Author: DAI
