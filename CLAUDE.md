@@ -33,9 +33,23 @@ CLI 検証では Local の php.ini を `-c` で渡すこと。渡さないと「
 
 ## 版数
 
-版数は**ヘッダの `Version:` 1箇所のみ**。JS の enqueue は SheetJS 自身の版（`0.20.3`）を
-使っておりキャッシュバスターを兼ねていないため、他に追随させる箇所は無い。
-`readme.txt` は無く、PUC は本体ヘッダを読む（`Requires` 系の readme 上書きは起きない）。
+版数は**2箇所**。片方だけ上げないこと。
+
+- `woo-hit-orderlist.php` の `Version:` ヘッダ
+- `readme.txt` の `Stable tag`
+
+```sh
+grep -nE "^ \* Version:|^Stable tag:" woo-hit-orderlist.php readme.txt
+```
+
+JS の enqueue は SheetJS 自身の版（`0.20.3`）を使っておりキャッシュバスターを兼ねていないため、
+これ以外に追随させる箇所は無い。
+
+★★ **`readme.txt` は 1.1.3 で新設した。** PUC は readme.txt があるとそこから
+`requires` / `requires_php` / `tested` を**本体ヘッダより後に上書きする**
+（`Puc/v5p5/Vcs/PluginUpdateChecker.php:186-194`）。つまり**過剰宣言の置き場が2つになった**。
+下の「宣言（Requires）の方針」は readme.txt 側にも同じように効く。
+現在 readme.txt には `Requires at least` を**書いていない**（実在する下限が無いため）。
 
 ## 配布物
 
