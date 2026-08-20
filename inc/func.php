@@ -48,7 +48,12 @@ if ( ! function_exists( 'whol_custom_single_add_to_cart_text' ) ){
 	 * あわせて get_the_terms() の戻り値未使用の呼び出し（タグ0件時に false を返し PHP8 で
 	 * TypeError になっていた）を削除し、タグ判定は部分一致を避けるため has_term() に置き換えた。
 	 *
-	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合はそのまま返す。
+	 * ★ タグが無い場合は固定文字列で上書きせず、WooCommerce が渡してきた $text（variable商品の
+	 * 「オプションを選択」、在庫切れの「続きを読む」等、商品タイプ・在庫状態に応じた本来の文言）を
+	 * そのまま返す。固定文字列を返していたため、これらの文言が「カートに入れる」に潰れていた。
+	 *
+	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合、または
+	 *                                 抽選購入タグが無い場合はそのまま返す。
 	 * @param WC_Product|null $product 対象商品。フィルタの第2引数から渡ってくる。
 	 * @return string ボタンに表示する文言。
 	 */
@@ -58,7 +63,7 @@ if ( ! function_exists( 'whol_custom_single_add_to_cart_text' ) ){
 		}
 		return has_term( '抽選購入', 'product_tag', $product->get_id() )
 			? '抽選に申し込む'
-			: 'カートに入れる';
+			: $text;
 	}
 	add_filter( 'woocommerce_product_single_add_to_cart_text', 'whol_custom_single_add_to_cart_text', 10, 2 );
 }
@@ -76,7 +81,12 @@ if ( ! function_exists( 'whol_custom_product_add_to_cart_text' ) ){
 	 * あわせて get_the_terms() の戻り値未使用の呼び出し（タグ0件時に false を返し PHP8 で
 	 * TypeError になっていた）を削除し、タグ判定は部分一致を避けるため has_term() に置き換えた。
 	 *
-	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合はそのまま返す。
+	 * ★ タグが無い場合は固定文字列で上書きせず、WooCommerce が渡してきた $text（variable商品の
+	 * 「オプションを選択」、在庫切れの「続きを読む」等、商品タイプ・在庫状態に応じた本来の文言）を
+	 * そのまま返す。固定文字列を返していたため、これらの文言が「カートに入れる」に潰れていた。
+	 *
+	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合、または
+	 *                                 抽選購入タグが無い場合はそのまま返す。
 	 * @param WC_Product|null $product 対象商品。フィルタの第2引数から渡ってくる。
 	 * @return string ボタンに表示する文言。
 	 */
@@ -86,7 +96,7 @@ if ( ! function_exists( 'whol_custom_product_add_to_cart_text' ) ){
 		}
 		return has_term( '抽選購入', 'product_tag', $product->get_id() )
 			? '抽選に申し込む'
-			: 'カートに入れる';
+			: $text;
 	}
 	add_filter( 'woocommerce_product_add_to_cart_text', 'whol_custom_product_add_to_cart_text', 10, 2 );
 }
