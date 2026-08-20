@@ -42,20 +42,25 @@ if ( ! function_exists( 'whol_custom_single_add_to_cart_text' ) ){
 	 * ★ 接頭辞なしの関数名（旧 woocommerce_custom_single_add_to_cart_text）はテーマ側の
 	 * 同名関数と衝突し Fatal error（Cannot redeclare）の原因になっていたため whol_ を付けて改名した。
 	 *
-	 * @return string ボタンに表示する文言（未翻訳の固定文言を __() でラップしたもの）。
+	 * ★ 商品ループ外（WooCommerce Store API 等）から呼ばれると global $post, $product が
+	 * null になり HTTP 500 の原因になっていたため、フィルタの第2引数で渡ってくる $product を
+	 * 関数引数として受け取る形に修正した（accepted_args を 2 に変更）。
+	 * あわせて get_the_terms() の戻り値未使用の呼び出し（タグ0件時に false を返し PHP8 で
+	 * TypeError になっていた）を削除し、タグ判定は部分一致を避けるため has_term() に置き換えた。
+	 *
+	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合はそのまま返す。
+	 * @param WC_Product|null $product 対象商品。フィルタの第2引数から渡ってくる。
+	 * @return string ボタンに表示する文言。
 	 */
-	function whol_custom_single_add_to_cart_text() {
-		global $post, $product;
-		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
-		$str = htmlspecialchars( $product->get_tags() );
-		$chkeck = '抽選購入';
-		if ( strpos( $str, $chkeck ) === false ) {
-			return __( 'カートに入れる', 'woocommerce' );
-		} else {
-			return __( '抽選に申し込む', 'woocommerce' );
+	function whol_custom_single_add_to_cart_text( $text, $product = null ) {
+		if ( ! $product instanceof WC_Product ) {
+			return $text;
 		}
+		return has_term( '抽選購入', 'product_tag', $product->get_id() )
+			? '抽選に申し込む'
+			: 'カートに入れる';
 	}
-	add_filter( 'woocommerce_product_single_add_to_cart_text', 'whol_custom_single_add_to_cart_text' );
+	add_filter( 'woocommerce_product_single_add_to_cart_text', 'whol_custom_single_add_to_cart_text', 10, 2 );
 }
 
 if ( ! function_exists( 'whol_custom_product_add_to_cart_text' ) ){
@@ -65,20 +70,25 @@ if ( ! function_exists( 'whol_custom_product_add_to_cart_text' ) ){
 	 * ★ 接頭辞なしの関数名（旧 woocommerce_custom_product_add_to_cart_text）はテーマ側の
 	 * 同名関数と衝突し Fatal error（Cannot redeclare）の原因になっていたため whol_ を付けて改名した。
 	 *
-	 * @return string ボタンに表示する文言（未翻訳の固定文言を __() でラップしたもの）。
+	 * ★ 商品ループ外（WooCommerce Store API 等）から呼ばれると global $post, $product が
+	 * null になり HTTP 500 の原因になっていたため、フィルタの第2引数で渡ってくる $product を
+	 * 関数引数として受け取る形に修正した（accepted_args を 2 に変更）。
+	 * あわせて get_the_terms() の戻り値未使用の呼び出し（タグ0件時に false を返し PHP8 で
+	 * TypeError になっていた）を削除し、タグ判定は部分一致を避けるため has_term() に置き換えた。
+	 *
+	 * @param string          $text    デフォルトのボタン文言。$product が WC_Product でない場合はそのまま返す。
+	 * @param WC_Product|null $product 対象商品。フィルタの第2引数から渡ってくる。
+	 * @return string ボタンに表示する文言。
 	 */
-	function whol_custom_product_add_to_cart_text() {
-		global $post, $product;
-		sizeof( get_the_terms( $post->ID, 'product_tag' ) );
-		$str = htmlspecialchars( $product->get_tags() );
-		$chkeck = '抽選購入';
-		if ( strpos( $str, $chkeck ) === false ) {
-			return __( 'カートに入れる', 'woocommerce' );
-		} else {
-			return __( '抽選に申し込む', 'woocommerce' );
+	function whol_custom_product_add_to_cart_text( $text, $product = null ) {
+		if ( ! $product instanceof WC_Product ) {
+			return $text;
 		}
+		return has_term( '抽選購入', 'product_tag', $product->get_id() )
+			? '抽選に申し込む'
+			: 'カートに入れる';
 	}
-	add_filter( 'woocommerce_product_add_to_cart_text', 'whol_custom_product_add_to_cart_text' );
+	add_filter( 'woocommerce_product_add_to_cart_text', 'whol_custom_product_add_to_cart_text', 10, 2 );
 }
 
 /*-------------------------------------------*/
