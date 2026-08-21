@@ -18,28 +18,27 @@ define( 'WHOL_PLUGIN_FILE', __FILE__ );
 require_once( dirname( __FILE__ ) . '/inc/func.php' );
 require_once( dirname( __FILE__ ) . '/inc/woo-orderlist.php' );
 require_once( dirname( __FILE__ ) . '/inc/commentsearch.php' );
+require_once( dirname( __FILE__ ) . '/inc/legacy-symbol-notice.php' );
 
 /*-------------------------------------------*/
 /* プラグインのアップデートチェック
 /*-------------------------------------------*/
 require 'inc/plugin-update-checker/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-$myUpdateChecker = PucFactory::buildUpdateChecker(
+$whol_update_checker = PucFactory::buildUpdateChecker(
 	'https://github.com/etbsjp/woo-hit-orderlist/',
 	__FILE__,
 	'woo-order-list'
 );
-$myUpdateChecker->setBranch( 'dist' );
+$whol_update_checker->setBranch( 'dist' );
 
 /*-------------------------------------------*/
 /* プラグインを有効化したときに実行
 /*-------------------------------------------*/
-if ( ! function_exists( 'woohitorderlist_plugin_activate' ) ){
-	function woohitorderlist_plugin_activate() {
-		// WooCommerceが有効化されているか確認
-		if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-			etbs_woocommerce_tag_exists('抽選購入', 'lottery');
-		}
+function whol_plugin_activate() {
+	// WooCommerceが有効化されているか確認
+	if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+		whol_ensure_product_tag('抽選購入', 'lottery');
 	}
-	register_activation_hook(__FILE__ , 'woohitorderlist_plugin_activate');
 }
+register_activation_hook(__FILE__ , 'whol_plugin_activate');
