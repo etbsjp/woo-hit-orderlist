@@ -27,7 +27,7 @@
  * @return void
  */
 function whol_legacy_symbol_notice() {
-	if ( ! class_exists( 'Woo_Order_Search_List' ) ) {
+	if ( ! class_exists( 'Woo_Order_Search_List', false ) ) {
 		return;
 	}
 	if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -54,7 +54,15 @@ function whol_legacy_symbol_notice() {
 		<p>
 			<?php
 			esc_html_e(
-				'旧コードには nonce 検証のない注文メモ送信の入口が含まれている場合があります。テーマから旧コードを削除するまでこの経路は塞がりません。',
+				'旧コードには nonce 検証のない注文メモ送信の入口が含まれている場合があります。',
+				'woo-hit-orderlist'
+			);
+			?>
+		</p>
+		<p>
+			<?php
+			esc_html_e(
+				'テーマから旧コードを削除するまでこの経路は塞がりません。',
 				'woo-hit-orderlist'
 			);
 			?>
