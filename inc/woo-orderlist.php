@@ -1,6 +1,6 @@
 <?php
 
-class Woo_Order_Search_List {
+class WHOL_Order_Search_List {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ), 10, 2 );
 	}
@@ -45,8 +45,8 @@ class Woo_Order_Search_List {
 			$status = 'exclude';
 		} 
 
-		etbs_wol_enqueue_enhanced_select();
-		echo header_wol_css_html();
+		whol_enqueue_enhanced_select();
+		echo whol_admin_css();
 
 		$tag_html    = '<option value="lottery" ' . selected( $tag, 'lottery', false ) . '>抽選購入</option><option value="all" ' . selected( $tag, 'all', false ) . '>全て</option>';
 		$status_html = '<option value="exclude" ' . selected( $status, 'exclude', false ) . '>キャンセル、失敗、返金を除外</option><option value="all" ' . selected( $status, 'all', false ) . '>全て</option>';
@@ -225,7 +225,7 @@ class Woo_Order_Search_List {
 		EOF;
 		echo $body_html1;
 
-		$table1 = Woo_Order_Search_List::my_table($day1, $day2, $product, $status);
+		$table1 = WHOL_Order_Search_List::my_table($day1, $day2, $product, $status);
 		echo $table1;
 
 		$body_html2 = <<< EOF
@@ -239,7 +239,7 @@ class Woo_Order_Search_List {
 
 		$wid = '[{ wpx : 2 },{ wpx : 50 },{ wpx : 144 },{ wpx : 121 },{ wpx : 121 },{ wpx : 144 },{ wpx : 144 },{ wpx : 72 }]';
 		$fname = '注文検索結果一覧.xlsx';
-		echo footer_wol_xlsx_html( $wid, $fname );
+		echo whol_enqueue_xlsx_export( $wid, $fname );
 
 	}
 
@@ -346,7 +346,7 @@ class Woo_Order_Search_List {
 			$body_table .= '<td>' . esc_html( $list['first_name'] . ' ' . $list['last_name'] ) . '</td>';
 			$body_table .= '<td>' . esc_html( $list['email'] ) . '</td>';
 			$body_table .= '<td>' . esc_html( $list['order_modified'] ) . '</td>';
-			$body_table .= '<td>' . esc_html( Woo_Order_Search_List::status_jpn( $list['status'] ) ) . '</td></tr>';
+			$body_table .= '<td>' . esc_html( WHOL_Order_Search_List::status_jpn( $list['status'] ) ) . '</td></tr>';
 		}
 
 		$body_table .='</table></div>';
@@ -377,4 +377,4 @@ class Woo_Order_Search_List {
 	}
 
 }
-Woo_Order_Search_List::init();
+WHOL_Order_Search_List::init();

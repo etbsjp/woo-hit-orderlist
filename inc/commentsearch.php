@@ -1,6 +1,6 @@
 <?php
 
-class Woo_Comment_Search_List {
+class WHOL_Comment_Search_List {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ), 10, 2 );
 	}
@@ -36,7 +36,7 @@ class Woo_Comment_Search_List {
 			$keyword = '';
 		}
 
-		echo header_wol_css_html();
+		echo whol_admin_css();
 
 		$ajaxurl = admin_url( 'admin-ajax.php');
 		$body_html = <<< EOF
@@ -61,12 +61,12 @@ class Woo_Comment_Search_List {
 		EOF;
 		echo $body_html;
 
-		$table1 = Woo_Comment_Search_List::my_table($day1, $day2, $keyword);
+		$table1 = WHOL_Comment_Search_List::my_table($day1, $day2, $keyword);
 		echo $table1;
 
 		$wid = '[{ wpx : 72 },{ wpx : 50 },{ wpx : 144 },{ wpx : 216 }]';
 		$fname = '注文メモ検索一覧.xlsx';
-		echo footer_wol_xlsx_html( $wid, $fname );
+		echo whol_enqueue_xlsx_export( $wid, $fname );
 
 	}
 
@@ -111,4 +111,4 @@ class Woo_Comment_Search_List {
 	}
 
 }
-Woo_Comment_Search_List::init();
+WHOL_Comment_Search_List::init();
