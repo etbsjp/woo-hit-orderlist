@@ -2,7 +2,7 @@
 Contributors:      DAI
 Tags:              woocommerce, order, lottery, email, export
 Tested up to:      7.0
-Stable tag:        1.1.4
+Stable tag:        1.2.0
 Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -37,6 +37,7 @@ WordPress のバージョン下限は設けていません。本プラグイン�
 
 == Changelog ==
 
+= 1.2.0 =
 * [ 機能追加 ] テーマに古いバージョンのコードが残っている場合に、管理画面へ警告を表示するようにしました。
 * [ 不具合修正 ] テーマに古いバージョンのコードが残っているサイトで、プラグインを有効化できない不具合を修正しました。これまでは「重大なエラー」と表示され、有効化が取り消されていました。
 * [ セキュリティ修正 ] テーマに古いバージョンのコードが残っているサイトで、当選メール送信が確認処理を通らずに実行できる状態になっていた問題に対処しました。プラグイン側の確認処理が先に働くようにしていますが、テーマから古いコードを取り除くまで完全には塞がりません。
