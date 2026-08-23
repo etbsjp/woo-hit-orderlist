@@ -208,11 +208,17 @@ function whol_render_legacy_symbol_notice( array $found ) {
 			<?php endforeach; ?>
 		</ul>
 		<p>
-			<?php esc_html_e( 'プラグインフォルダの重複ではなく、有効テーマの functions.php に旧コードが残っている可能性があります。上記の宣言元ファイルを確認してください。', 'woo-hit-orderlist' ); ?>
+			<?php esc_html_e( 'プラグインフォルダの重複ではなく、有効テーマの functions.php に旧コードが残っている可能性があります。', 'woo-hit-orderlist' ); ?>
+		</p>
+		<p>
+			<?php esc_html_e( '上記の宣言元ファイルを確認してください。', 'woo-hit-orderlist' ); ?>
 		</p>
 		<?php if ( $has_generic_symbol ) : ?>
 			<p>
-				<?php esc_html_e( '「add_select2_script」は無接頭辞の汎用的な関数名のため、本プラグインと無関係のテーマ・プラグインが同名の関数を偶然持っている可能性があります。上記の宣言元ファイルを見て、本プラグインの旧コードかどうかを判断してください。', 'woo-hit-orderlist' ); ?>
+				<?php esc_html_e( '「add_select2_script」は無接頭辞の汎用的な関数名のため、本プラグインと無関係のテーマ・プラグインが同名の関数を偶然持っている可能性があります。', 'woo-hit-orderlist' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( '上記の宣言元ファイルを見て、本プラグインの旧コードかどうかを判断してください。', 'woo-hit-orderlist' ); ?>
 			</p>
 		<?php endif; ?>
 		<p>
