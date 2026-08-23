@@ -2,7 +2,7 @@
 Contributors:      DAI
 Tags:              woocommerce, order, lottery, email, export
 Tested up to:      7.0
-Stable tag:        1.2.0
+Stable tag:        1.2.1
 Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +36,10 @@ License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 WordPress のバージョン下限は設けていません。本プラグインが使用する WordPress の機能は、いずれも古くから提供されているものです。
 
 == Changelog ==
+
+= 1.2.1 =
+* [ 機能追加 ] テーマに古いバージョンのコードが残っている場合の警告に、そのコードを宣言しているファイル名と行番号を表示するようにしました。これまではテーマのどこにあるかを手作業で探す必要がありました。
+* [ 不具合修正 ] テーマに古いバージョンのコードが残っていても、警告が表示されない場合がある不具合を修正しました。これまでは1種類のクラスだけを見ていたため、関数だけが残っているサイトを見落としていました。検出する対象を8種類に広げています。
 
 = 1.2.0 =
 * [ 機能追加 ] テーマに古いバージョンのコードが残っている場合に、管理画面へ警告を表示するようにしました。
