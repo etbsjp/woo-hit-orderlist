@@ -227,6 +227,12 @@ function whol_send_order_note(){
 	echo esc_html( sprintf( '送信が完了しました！（%d件）', $sent ) );
 	wp_die();
 }
+// ★ 優先度は既定（10）のまま据え置き。task-queue #109（2026-08-23）で、テーマ側に残る
+// 旧コピーの `add_action( 'wp_ajax_etbs_woo_sendmailhit', ... )` も無指定＝優先度10であることを
+// 実物（sigusa.jp からの吸い出し）で実測済み。同一優先度では登録順で決まり、wp-settings.php の
+// 読み込み順は「通常プラグイン（589行目）→ テーマ functions.php（738行目）」なので、優先度が
+// 同じである限りプラグイン側のこのコールバックが必ず先に登録される。ここを既定のままにして
+// いるのは実測に基づく判断であり、書き忘れではない。
 add_action( 'wp_ajax_etbs_woo_sendmailhit', 'whol_send_order_note' );
 //add_action( 'wp_ajax_nopriv_etbs_woo_sendmailhit', 'whol_send_order_note' );
 
