@@ -14,8 +14,8 @@
  * 時期があり、テーマ側の同名関数と衝突して Fatal error（Cannot redeclare）を起こしていたのは
  * その名残であるため、サイレントに無視せず管理者へ知らせる。
  *
- * ★★ task-queue #109（2026-08-23）で、Local 環境に実在する唯一の旧コピー
- * （`~/Downloads/etbs-whol-legacy/magocolo-woo-order-list.php`。sigusa.jp からの吸い出し）を
+ * ★★ task-queue #109（2026-08-23）で、実在するテーマ内の唯一の旧コピー
+ * （社内で読み取り専用のまま保全した検証用ファイル）を
  * 使って実測した結果、この旧コピーは「プラグインの一部だけを含む部分コピー」だった。
  * 具体的には `Woo_Comment_Search_List` クラスや `etbs_woocommerce_tag_exists()` 関数は
  * 持たない一方、#98 で洗い出した旧記号リストには無かった `add_select2_script()`（Select2 を
@@ -70,9 +70,8 @@ add_action( 'admin_notices', 'whol_legacy_symbol_notice' );
 /**
  * 改名前の旧グローバル記号の固定リストを返す。
  *
- * task-queue #98 で洗い出した旧記号名と、#109 で実測した実物の旧コピー
- * （`etbs-whol-legacy/magocolo-woo-order-list.php`）が実際に持っていた記号名を
- * 合わせた8個（クラス2個＋関数6個）。
+ * task-queue #98 で洗い出した旧記号名と、#109 で実測した実物の旧コピーが
+ * 実際に持っていた記号名を合わせた8個（クラス2個＋関数6個）。
  *
  * @return array<int, array{type: string, name: string}> type は 'class' または 'function'。
  */
