@@ -75,6 +75,28 @@ JS の enqueue は SheetJS 自身の版（`0.20.3`）を使っておりキャッ
 下の「宣言（Requires）の方針」は readme.txt 側にも同じように効く。
 現在 readme.txt には `Requires at least` を**書いていない**（実在する下限が無いため）。
 
+## CI（2026-08-28 導入）
+
+**共通ルールは `~/.claude/etbs-plugin-rules.md` の 2.7 節**（standard の選定理由・`phpcbf` を走らせない理由・
+陽性対照・配布物の検証手順など）。ここには **このリポジトリでしか決まらない値**だけを書く。
+
+- 定義は `.github/workflows/ci.yml`。PR ごとに `php -l`（PHP 7.4 / 8.3）と
+  `PHPCS (WordPress-Extra, changed lines)` が走る。`dist` への直 push では `php -l` だけ走る
+- **既存指摘の基準値: 228 ERROR / 51 WARNING**（2026-08-28 実測・`WordPress-Extra`）。
+  ★ 測り直すときは `vendor/bin/phpcs --standard=./.phpcs.xml.dist --report=summary $(git ls-files '*.php')`
+  の形でのみ行う。素の phpcs は `.gitignore` を尊重せず、`.claude/worktrees/` や `-old` 系まで数える
+- **`Requires PHP: 7.4` を宣言している。** 置き場は **`woo-hit-orderlist.php:7` と `readme.txt:6` の2箇所**で、
+  CI の matrix `['7.4','8.3']` と合わせて **3箇所を同時に動かす**（片方だけ動かさない）。
+  ★ PUC は `readme.txt` の `Requires PHP` で本体ヘッダを上書きする
+  （`Puc/v5p5/Vcs/PluginUpdateChecker.php:192-194`）。**更新リンクの可否を決めているのは readme 側の値**なので、
+  ヘッダと matrix だけ直して readme を残すと、宣言・配信・CI の保証範囲が静かに食い違う。
+  ★ 上の「宣言（Requires）の方針」のとおり、この 7.4 は**据え置き**であって新規宣言ではない
+- **原本（widget-shortcode-tools）と違うのは2箇所。**
+  `.phpcs.xml.dist` の `<ruleset name>` / `description` と、`composer.json` の `name`
+  （`etbsjp/woo-hit-orderlist` に改名し、`composer update --lock` で `content-hash` も再生成済み）。
+  ★ **原本の `composer.lock` をコピーで上書きしないこと**——落ちずに警告だけ出て完走し、
+  `composer update` を促されて上の基準値が静かにずれる（正本 2.7 節）
+
 ## 配布物
 
 `dist` ブランチへのマージ＝配信。PUC が配る zip には**追跡しているファイルが全部入る**ため、
