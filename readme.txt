@@ -1,5 +1,5 @@
 === Woo Hit Orderlist ===
-Contributors:      DAI
+Contributors:      etbsjp
 Tags:              woocommerce, order, lottery, email, export
 Tested up to:      7.0
 Stable tag:        1.2.1

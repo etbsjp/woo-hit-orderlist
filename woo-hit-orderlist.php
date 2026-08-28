@@ -5,7 +5,7 @@
  * Version:           1.2.1
  * Requires Plugins:  woocommerce
  * Requires PHP:      7.4
- * Author: DAI
+ * Author: ETBS (DAI)
  * Author URI: https://etbs.jp
  * Plugin URI: https://etbs.jp/product/woo-hit-orderlist/
  * License:           GPL-2.0-or-later
