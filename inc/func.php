@@ -243,7 +243,7 @@ function whol_add_dashboard_widget() {
 	if ( ! current_user_can( 'edit_shop_orders' ) ) { return; }
 	wp_add_dashboard_widget(
 		'whol_dashboard_widget',
-		'Woo Hit Orderlist',
+		'ETBS Hit Orderlist',
 		'whol_render_dashboard_widget'
 	);
 }

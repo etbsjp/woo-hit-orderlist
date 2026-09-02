@@ -1,8 +1,7 @@
-=== Woo Hit Orderlist ===
+=== ETBS Hit Orderlist ===
 Contributors:      etbsjp
 Tags:              woocommerce, order, lottery, email, export
-Tested up to:      7.0
-Stable tag:        1.2.1
+Stable tag:        1.2.2
 Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +35,10 @@ License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 WordPress のバージョン下限は設けていません。本プラグインが使用する WordPress の機能は、いずれも古くから提供されているものです。
 
 == Changelog ==
+
+= 1.2.2 =
+* [ その他 ] プラグインの表示名を「ETBS Hit Orderlist」に変更しました。フォルダ名・設定・更新の受け取りには影響しません。
+* [ その他 ] 動作確認済みの WordPress バージョンの記載を削除しました。実際に確認した範囲を超えて記載していたためです。
 
 = 1.2.1 =
 * [ 機能追加 ] テーマに古いバージョンのコードが残っている場合の警告に、そのコードを宣言しているファイル名と行番号を表示するようにしました。これまではテーマのどこにあるかを手作業で探す必要がありました。

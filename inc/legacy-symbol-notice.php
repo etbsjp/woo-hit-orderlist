@@ -186,7 +186,7 @@ function whol_render_legacy_symbol_notice( array $found ) {
 	?>
 	<div class="notice notice-error">
 		<p>
-			<?php esc_html_e( 'Woo Hit Orderlist: 旧バージョンのコードと同名のクラス・関数が現在のバージョンと同時に読み込まれています。', 'woo-hit-orderlist' ); ?>
+			<?php esc_html_e( 'ETBS Hit Orderlist: 旧バージョンのコードと同名のクラス・関数が現在のバージョンと同時に読み込まれています。', 'woo-hit-orderlist' ); ?>
 		</p>
 		<ul style="list-style: disc; margin-left: 2em;">
 			<?php foreach ( $found as $item ) : ?>
